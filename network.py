@@ -1,0 +1,27 @@
+import socket
+
+
+class network:
+    def __init__(self):
+        self.client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.server = socket.gethostname()
+        self.port = 5500
+        self.addr = (self.server,self.port)
+        self.id  = self.connect()
+        print(self.id)
+    def connect(self):
+        try:
+            self.client.connect(self.addr)
+            return self.client.recv(2048).decode()
+        except:
+            pass
+    def send(self,data):
+        try:
+            self.client.send(str.encode(data))
+            return self.client.recv(2048).decode()
+        except socket.error as e :
+            print(e)
+n = network()
+while True:
+    inp = input("SFasf")
+    print(n.send(inp))
