@@ -1,27 +1,28 @@
 import socket
+import threading
+from tkinter import *
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect((socket.gethostname(),5500))
 
 
-class network:
-    def __init__(self):
-        self.client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        self.server = socket.gethostname()
-        self.port = 5500
-        self.addr = (self.server,self.port)
-        self.id  = self.connect()
-        print(self.id)
-    def connect(self):
+
+
+def recv_msg():
+    while True:
         try:
-            self.client.connect(self.addr)
-            return self.client.recv(2048).decode()
+            message = client.recv(1024*2).decode("utf-8")
+            print(message)
         except:
-            pass
-    def send(self,data):
-        try:
-            self.client.send(str.encode(data))
-            return self.client.recv(2048).decode()
-        except socket.error as e :
-            print(e)
-n = network()
-while True:
-    inp = input("SFasf")
-    print(n.send(inp))
+            print("error")
+            client.close()
+            break
+def write():
+    while True:
+        message = input("")
+        client.send(message.encode("utf-8"))
+
+
+rec_thread = threading.Thread(target=recv_msg)
+rec_thread.start()
+send_thread = threading.Thread(target=write)
+send_thread.start()
